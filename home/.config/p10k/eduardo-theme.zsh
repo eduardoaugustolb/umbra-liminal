@@ -1,4 +1,4 @@
-# ~/.config/p10k/diego-theme.zsh
+# ~/.config/p10k/eduardo-theme.zsh
 # Overrides de Powerlevel10k: estilo LEAN de 1 linea, paleta pywal.
 # Se carga DESPUES de ~/.p10k.zsh (ver el source al final de ~/.zshrc).
 # Revertir: borra esa linea de source en ~/.zshrc y abre una terminal nueva.
@@ -88,6 +88,23 @@
   typeset -g POWERLEVEL9K_TIME_FOREGROUND=$muted
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M}'
   typeset -g POWERLEVEL9K_TIME_PREFIX=''
+
+  # --- Ícone de distro: Omarchy no Omarchy, Arch no Arch ---
+  # O p10k detecta a distro pelo `ID=` de /etc/os-release com `case *arch*`,
+  # e "omarchy" contém "arch" (om-arch-y): sem override, o Omarchy herdaria a
+  # logo do Arch (U+F303). O upstream não tem ramo `omarchy`, então este tema
+  # força o Tux genérico (U+F17C, já presente na Nerd Font) só no Omarchy e
+  # preserva a detecção padrão (Arch etc.) nas demais distros.
+  # (O logo real do Omarchy vive em U+E900 da fonte `omarchy`, que exige
+  # font-family explícita — indisponível no contexto do prompt.)
+  local _umbra_os_id=""
+  if [[ -r /etc/os-release ]]; then
+    _umbra_os_id=$(. /etc/os-release 2>/dev/null; printf '%s' "${ID:-}")
+  fi
+  if [[ $_umbra_os_id == omarchy ]]; then
+    typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION=$'\uF17C'
+  fi
+  unset _umbra_os_id
 
   (( ! $+functions[p10k] )) || p10k reload
 }
